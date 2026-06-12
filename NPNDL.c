@@ -19,6 +19,17 @@ typedef struct {
     ElemLista** A;
 } Grafo;
 
+typedef struct auxNo {
+    int valor;
+    struct auxNo* prox;
+    
+} No;
+
+typedef struct {
+    No* inicio;
+    No* fim;
+} Fila;
+
 Grafo* inicializa_grafo(int vertices) {
     if (vertices < 1) return NULL;
     Grafo *g = (Grafo*) malloc(sizeof(Grafo));
@@ -301,6 +312,71 @@ void imprimeCaminho(ElemLista* lista) {
     printf("\n");
 }
 
+void inicializaFila(Fila* f) {
+    f->inicio = NULL;
+    f->fim = NULL;
+}
+
+bool filaVazia(Fila* f) {
+    if (!f->inicio) return true;
+    return false;
+}
+
+void insereFila(Fila* f, int valor) {
+    No* novo = (No*) malloc(sizeof(No));
+    novo->prox = NULL;
+    novo->valor = valor;
+    if (f->inicio == NULL) {
+        f->inicio = novo;
+        f->fim = novo;
+    } else {
+        f->fim->prox = novo;
+        f->fim = novo;
+    }
+}
+
+int excluiFila(Fila* f) {
+    if (!f->inicio) return -1;
+    No* atual = f->inicio;
+    int valor = atual->valor;
+    f->inicio = atual->prox;
+    if (!f->inicio) f->fim = NULL;
+    free(atual);
+    return valor;
+}
+
+void buscaEmLargura(Grafo* g, int inicial, bool* visitado) {
+    if (!g || inicial < 0 || inicial >= g->numVertices) return;
+    int atual, x;
+    Fila f;
+    inicializaFila(&f);
+    insereFila(&f, inicial);
+    visitado[inicial] = true;
+    ElemLista* end;
+    while(!filaVazia(&f)) {
+        atual = excluiFila(&f);
+        end = g->A[atual];
+        while(end) {
+            x = end->vertice;
+            if (!visitado[x]) {
+                insereFila(&f, x);
+                visitado[x] = true;
+            }
+            end = end->prox;
+        }
+    }
+}
+
+void buscaEmLarguraCompleta(Grafo* g) {
+    if (!g || g->numVertices < 1) return;
+    bool* visitado = malloc(sizeof(bool)*g->numVertices);
+    for (int x = 0; x < g->numVertices; x++) visitado[x] = false;
+    for (int x = 0; x < g->numVertices; x++) {
+        if (!visitado[x]) buscaEmLargura(g, x, visitado);
+        free(visitado);
+    }
+}
+
 int main() {
     Grafo *g = inicializa_grafo(5);
     inserir_aresta(g, 1, 2);
@@ -310,6 +386,8 @@ int main() {
     printf("\n");
     buscaEmProfundidade(g);
     printf("\n");
+    buscaEmLarguraCompleta(g);
+    printf("\n");
     DFSCores(g);
     printf("\n");
     imprimeCaminho(DFSCaminho(g, 3, 1));
@@ -318,6 +396,8 @@ int main() {
     exibe_grafo(g);
     printf("\n");
     buscaEmProfundidade(g);
+    printf("\n");
+    buscaEmLarguraCompleta(g);
     printf("\n");
     DFSCores(g);
     printf("\n");
@@ -335,6 +415,8 @@ int main() {
     exibe_grafo(g);
     printf("\n");
     buscaEmProfundidade(g);
+    printf("\n");
+    buscaEmLarguraCompleta(g);
     printf("\n");
     DFSCores(g);
 

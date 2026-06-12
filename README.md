@@ -23,6 +23,7 @@ Funções:
 - Busca em profundidade
 - DFS com cores (com identificação de grafo não acíclico)
 - Busca de caminho
+- Busca em largura
 
 Grafo Não Ponderado e Não Direcionado em Matriz de Adjacências (NPNDM).
 Funções:
@@ -37,6 +38,7 @@ Funções:
 - Verificar se determinado vértice possui vizinhos
 - Verificar grau
 - Busca em profundidade
+- Busca em largura
 
 Grafo Ponderado e Não Direcionado em Listas de Adjacências (PNDL).
 Funções:
