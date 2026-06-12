@@ -167,6 +167,30 @@ int retorna_grau(Grafo* g, int nodo) {
     return grau;
 }
 
+void visitaProfundidade(Grafo* g, int atual, bool* visitado, int anterior) {
+    printf("Visitando vertice: %3i (anterior: %3i)\n", atual, anterior);
+    visitado[atual] = true;
+    ElemLista* end = g->A[atual];
+    while (end) {
+        if (!visitado[end->vertice]) {
+            visitaProfundidade(g, end->vertice, visitado, atual);
+        }
+        end = end->prox;
+    }
+}
+
+void buscaEmProfundidade(Grafo* g) {
+    if (!g || g->numVertices < 1) return;
+    bool* visitado = (bool*) malloc(sizeof(bool)*g->numVertices);
+    for (int x = 0; x < g->numVertices; x++) visitado[x] = false;
+    for (int x = 0; x < g->numVertices; x++) {
+        if (!visitado[x]) {
+            visitaProfundidade(g, x, visitado, -1);
+        }
+    }
+    free(visitado);
+}
+
 int main() {
     Grafo *g = inicializa_grafo(5);
     inserir_aresta(g, 1, 2, 5);
@@ -174,8 +198,12 @@ int main() {
     inserir_aresta(g, 0, 2, 6);
     exibe_grafo(g);
     printf("\n");
+    buscaEmProfundidade(g);
+    printf("\n");
     remove_aresta(g, 1, 2);
     exibe_grafo(g);
+    printf("\n");
+    buscaEmProfundidade(g);
     printf("\n");
     printf("%d", numero_aresta(g));
     printf("\n");
@@ -187,6 +215,8 @@ int main() {
     printf("\n");
     libera_grafo(g);
     exibe_grafo(g);
+    printf("\n");
+    buscaEmProfundidade(g);
 
     return 1;
 }

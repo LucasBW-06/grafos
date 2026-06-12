@@ -21,7 +21,8 @@ Funções:
 - Verificar se determinado vértice possui vizinhos
 - Verificar grau
 - Busca em profundidade
-- DFS com coress
+- DFS com cores (com identificação de grafo não acíclico)
+- Busca de caminho
 
 Grafo Não Ponderado e Não Direcionado em Matriz de Adjacências (NPNDM).
 Funções:
@@ -77,6 +78,7 @@ Funções:
 - Verificar número de arestas
 - Verificar se determinado vértice possui vizinhos
 - Verificar grau
+- DFS com cores (com identificação de grafo não acíclico)
 
 Grafo Ponderado e Direcionado em Matriz de Adjacências (PDM).
 Funções:

@@ -155,6 +155,63 @@ int retorna_grau(Grafo* g, int nodo) {
     return grau;
 }
 
+/*
+BRANCO [0] : vértice não visitado
+CINZA [1] : vértice sendo processado (explorando sua lista de adjacências)
+PRETO [2] : vértice já processado
+*/
+
+void visitaDFSCores(Grafo* g, int atual, int* tempo, int* cor, int* tDescoberta, int* tTermino, int* anterior) {
+    (*tempo)++;
+    cor[atual] = 1;
+    tDescoberta[atual] = *tempo;
+    int w;
+    ElemLista* end = g->A[atual];
+    while (end) {
+        w = end->vertice;
+        if (cor[w] == 0) {
+            anterior[w] = atual;
+            visitaDFSCores(g, w, tempo, cor, tDescoberta, tTermino, anterior);
+        } else if (cor[w] == 1) printf("Este grafo não é acíclico\n");
+        end= end->prox;
+    }
+    cor[atual] = 2;
+    (*tempo)++;
+    tTermino[atual] = *tempo;
+}
+
+void DFSCores(Grafo* g) {
+    if (!g || g->numVertices < 1) return;
+    int* cor = (int*) malloc(sizeof(int)*g->numVertices);
+    int* tDescoberta = (int*) malloc(sizeof(int)*g->numVertices);
+    int* tTermino = (int*) malloc(sizeof(int)*g->numVertices);
+    int* anterior = (int*) malloc(sizeof(int)*g->numVertices);
+    int tempo = 0;
+    for (int x = 0; x < g->numVertices; x++) {
+        cor[x] = 0;
+        tDescoberta[x] = -1;
+        tTermino[x] = -1;
+        anterior[x] = -1;
+    }
+
+    for (int x = 0; x < g->numVertices; x++) {
+        if (cor[x] == 0) {
+            visitaDFSCores(g, x, &tempo, cor, tDescoberta, tTermino, anterior);
+        }
+    }
+    printf("Resumo da Busca em Profundidade:\n");
+    printf("No\tanterior\tDescoberta\tTermino\tCor\n");
+    for (int x = 0; x < g->numVertices; x++) {
+        printf("%2i\t%8i\t%10i\t%7i\t%3i\n", x, anterior[x], tDescoberta[x], tTermino[x], cor[x]);
+    }
+
+    printf("\n");
+    free(cor);
+    free(tDescoberta);
+    free(tTermino);
+    free(anterior);
+}
+
 int main() {
     Grafo *g = inicializa_grafo(5);
     inserir_aresta(g, 1, 2, 5);
